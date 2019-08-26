@@ -72,6 +72,7 @@ typedef enum {
 #include "StaticAuthCallbacks.h"
 #include "StreamInfoProvider.h"
 #include "IotAuthCallback.h"
+#include "GreengrassAuthCallback.h"
 #include "Util.h"
 #include "FileLoggerPlatformCallbackProvider.h"
 

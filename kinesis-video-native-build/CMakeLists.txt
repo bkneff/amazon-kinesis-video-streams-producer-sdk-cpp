@@ -311,6 +311,7 @@ set(C_PRODUCER_SOURCE_FILES
         ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/FileAuthCallbacks.c
         ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/StaticAuthCallbacks.c
         ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/IotAuthCallback.c
+        ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/GreengrassAuthCallback.c
         ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/ConnectionStaleStateMachine.c
         ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/ContinuousRetryStreamCallbacks.c
         ${KINESIS_VIDEO_C_PRODUCER_SRC}/src/source/StreamLatencyStateMachine.c

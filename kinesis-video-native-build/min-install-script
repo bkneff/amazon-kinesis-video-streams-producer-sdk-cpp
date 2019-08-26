@@ -18,7 +18,7 @@ source $KINESIS_VIDEO_ROOT/install-script-common.sh
 max_parallel=2
 build_type=Release
 build_test=FALSE
-build_gst_artifact=TRUE
+build_gst_artifact=FALSE
 build_jni_only=FALSE
 build_producer=TRUE
 env_var=""

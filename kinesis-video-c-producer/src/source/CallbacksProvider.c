@@ -72,6 +72,67 @@ CleanUp:
 }
 
 /**
+ * Create the default callbacks provider with AWS Greengrass
+ */
+STATUS createDefaultCallbacksProviderWithGreengrass(PCHAR region,
+                                                    PCHAR caCertPath,
+                                                    PCHAR userAgentPostfix,
+                                                    PCHAR customUserAgent,
+                                                    BOOL cachingEndpoint,
+                                                    PClientCallbacks* ppClientCallbacks)
+{
+    ENTERS();
+    STATUS retStatus = STATUS_SUCCESS;
+    PCallbacksProvider pCallbacksProvider = NULL;
+    PAuthCallbacks pAuthCallbacks = NULL;
+    PStreamCallbacks pStreamCallbacks = NULL;
+
+    CHK_STATUS(createAbstractDefaultCallbacksProvider(DEFAULT_CALLBACK_CHAIN_COUNT,
+                                                    cachingEndpoint,
+                                                    0,
+                                                    region,
+                                                    EMPTY_STRING,
+                                                    caCertPath,
+                                                    userAgentPostfix,
+                                                    customUserAgent,
+                                                    ppClientCallbacks));
+
+    pCallbacksProvider = (PCallbacksProvider) *ppClientCallbacks;
+
+    CHK_STATUS(createGreengrassAuthCallbacks((PClientCallbacks) pCallbacksProvider,
+                                             &pAuthCallbacks));
+
+    CHK_STATUS(createContinuousRetryStreamCallbacks((PClientCallbacks) pCallbacksProvider, &pStreamCallbacks));
+
+CleanUp:
+
+    if (STATUS_FAILED(retStatus)) {
+        if (pCallbacksProvider != NULL) {
+            freeCallbacksProvider((PClientCallbacks *) &pCallbacksProvider);
+        }
+
+        if (pAuthCallbacks != NULL) {
+            freeGreengrassAuthCallbacks(&pAuthCallbacks);
+        }
+
+        if (pStreamCallbacks != NULL) {
+            freeContinuousRetryStreamCallbacks(&pStreamCallbacks);
+        }
+
+        pCallbacksProvider = NULL;
+    }
+
+    // Set the return value if it's not NULL
+    if (ppClientCallbacks != NULL) {
+        *ppClientCallbacks = (PClientCallbacks) pCallbacksProvider;
+    }
+
+    LEAVES();
+    return retStatus;
+}
+
+
+/**
  * Create the default callbacks provider with AWS credentials and defaults
  */
 STATUS createDefaultCallbacksProviderWithAwsCredentials(PCHAR accessKeyId,

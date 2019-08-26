@@ -51,6 +51,7 @@ extern "C" {
 #define STATUS_DUPLICATE_AUTH_CALLBACK_FREE_FUNC                                    STATUS_PRODUCER_BASE + 0x0000001b
 #define STATUS_DUPLICATE_API_CALLBACK_FREE_FUNC                                     STATUS_PRODUCER_BASE + 0x0000001c
 #define STATUS_FILE_LOGGER_INDEX_FILE_TOO_LARGE                                     STATUS_PRODUCER_BASE + 0x0000001d
+#define STATUS_GREENGRASS_FAILED                                                    STATUS_PRODUCER_BASE + 0x0000001e
 
 
 /**
@@ -379,7 +380,6 @@ typedef struct __AwsCredentials* PAwsCredentials;
 ////////////////////////////////////////////////////
 // Public functions
 ////////////////////////////////////////////////////
-
 /**
  * Creates a default callbacks provider based on static AWS credentials
  *
@@ -400,6 +400,24 @@ typedef struct __AwsCredentials* PAwsCredentials;
  * @return - STATUS code of the execution
  */
 PUBLIC_API STATUS createDefaultCallbacksProviderWithAwsCredentials(PCHAR, PCHAR, PCHAR, UINT64, PCHAR, PCHAR, PCHAR, PCHAR, BOOL, PClientCallbacks*);
+
+
+/**
+ * Creates a default callbacks provider based on Greengrass
+ *
+ * NOTE: The caller is responsible for releasing the structure by calling
+ * the corresponding {@link freeCallbackProvider} API.
+ *
+ * @param - PCHAR - IN/OPT - AWS region
+ * @param - PCHAR - IN/OPT - CA Cert Path
+ * @param - PCHAR - IN/OPT - User agent name (Use NULL)
+ * @param - PCHAR - IN/IOT - Custom user agent to be used in the API calls
+ * @param - BOOL - IN - Whether to create caching endpoint only callback provider
+ * @param - PClientCallbacks* - OUT - Returned pointer to callbacks provider
+ *
+ * @return - STATUS code of the execution
+ */
+PUBLIC_API STATUS createDefaultCallbacksProviderWithGreengrass(PCHAR, PCHAR, PCHAR, PCHAR, BOOL, PClientCallbacks*);
 
 /**
  * Creates a default callbacks provider that uses iot certificate as auth method.
@@ -642,6 +660,20 @@ PUBLIC_API STATUS setDeviceInfoStorageSize(PDeviceInfo, UINT64);
  * @return - STATUS - status of operation
  */
 PUBLIC_API STATUS setDeviceInfoStorageSizeBasedOnBitrateAndBufferDuration(PDeviceInfo, UINT64, UINT64);
+/*
+ * Creates the Greengrass Credentials auth callbacks
+ *
+ * NOTE: The caller is responsible for releasing the structure by calling
+ * the corresponding free API.
+ *
+ * @param - PCallbacksProvider - IN - Pointer to callback provider
+ *
+ * @param - PAuthCallbacks* - OUT - Pointer to pointer to AuthCallback struct
+ *
+ * @return - STATUS - status of operation
+ */
+PUBLIC_API STATUS createGreengrassAuthCallbacks(PClientCallbacks, PAuthCallbacks*);
+
 
 /*
  * Creates the Iot Credentials auth callbacks
@@ -662,6 +694,16 @@ PUBLIC_API STATUS setDeviceInfoStorageSizeBasedOnBitrateAndBufferDuration(PDevic
  * @return - STATUS - status of operation
  */
 PUBLIC_API STATUS createIotAuthCallbacks(PClientCallbacks, PCHAR, PCHAR, PCHAR, PCHAR, PCHAR, PCHAR, PAuthCallbacks*);
+
+/*
+ * Frees the Greengrass Credential auth callbacks
+ *
+ * @param - PAuthCallbacks* - IN/OUT - pointer to AuthCallback provider object
+ *
+ * @return - STATUS - status of operation
+ */
+PUBLIC_API STATUS freeGreengrassAuthCallbacks(PAuthCallbacks*);
+
 
 /*
  * Frees the Iot Credential auth callbacks
