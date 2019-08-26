@@ -13,8 +13,6 @@ STATUS createGreengrassAuthCallbacks(PClientCallbacks pCallbacksProvider,
     ENTERS();
     STATUS retStatus = STATUS_SUCCESS;
 
-    printf("INSIDE GGAUTH CALLBACKS\n");
-
     PGreengrassAuthCallbacks pGreengrassAuthCallbacks = NULL;
 
     CHK(pCallbacksProvider != NULL && ppGreengrassAuthCallbacks != NULL
@@ -191,8 +189,6 @@ CleanUp:
 STATUS parseGreengrassResponse(PGreengrassAuthCallbacks pGreengrassAuthCallbacks)
 {
 
-    printf("INSIDE PARSE GG RESPONSE\n");
-
     ENTERS();
     STATUS retStatus = STATUS_SUCCESS;
 
@@ -242,9 +238,6 @@ STATUS parseGreengrassResponse(PGreengrassAuthCallbacks pGreengrassAuthCallbacks
         }
     }
 
-    printf("ACCESS KEY ID %s\n", accessKeyId );
-    printf("SESSION TOKEN %s\n", sessionToken );
-    printf("SECRET KEY %s\n", secretKey );
     CHK(accessKeyId != NULL && secretKey != NULL && sessionToken != NULL, STATUS_GREENGRASS_FAILED);
 
     currentTime = pGreengrassAuthCallbacks->pCallbacksProvider->clientCallbacks.getCurrentTimeFn(
@@ -326,18 +319,13 @@ STATUS greengrassCurlHandler(PGreengrassAuthCallbacks pGreengrassAuthCallbacks)
 
     if ((serviceUrl = getenv("AWS_CONTAINER_CREDENTIALS_FULL_URI")) == NULL ) {
         DLOGE("Greengrass credential endpoint is not set");
-        printf("Greengrass credential endpoint is not set");
         CHK(FALSE, STATUS_GREENGRASS_FAILED);
     }
-    printf("SERVICE URL %s\n", serviceUrl);
 
     if ((ggAuthToken = getenv("AWS_CONTAINER_AUTHORIZATION_TOKEN")) == NULL ) {
         DLOGE("Greengrass auth token is not set");
-        printf("Greengrass auth token is not set");
         CHK(FALSE, STATUS_GREENGRASS_FAILED);
     }
-
-    printf("AUTHTOKEN: %s\n", ggAuthToken);
 
     struct curl_slist* headerList = NULL;
 
